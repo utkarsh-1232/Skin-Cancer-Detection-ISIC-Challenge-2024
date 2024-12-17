@@ -6,6 +6,10 @@ The task is to develop image-based algorithms to identify histologically confirm
 
 ## Data
 The dataset consists of diagnostically labelled images with additional metadata. The images are JPEGs. The associated .csv file contains a binary diagnostic label (`target`), potential input variables (e.g. `age_approx`, `sex`, `anatom_site_general`, etc.), and additional attributes (e.g. image source and precise diagnosis). In the challenge, one is to differentiate benign from malignant cases. For each image (`isic_id`) one is to assign the probability (`target`) ranging [0, 1] that the case is malignant.
+To download the data files, please run the following shell command:
+```
+kaggle competitions download -c isic-2024-challenge
+```
 
 ## Evaluation
 Submissions are evaluated on partial area under the ROC curve (pAUC) above 80% true positive rate (TPR) for binary classification of malignant examples. The receiver operating characteristic (ROC) curve illustrates the diagnostic ability of a given binary classifier system as its discrimination threshold is varied. However, there are regions in the ROC space where the values of TPR are unacceptable in clinical practice. Systems that aid in diagnosing cancers are required to be highly-sensitive, so this metric focuses on the area under the ROC curve AND above 80% TRP. Hence, scores range from [0.0, 0.2].
@@ -13,13 +17,13 @@ Submissions are evaluated on partial area under the ROC curve (pAUC) above 80% t
 ## Approach
 I adopted a structured and multi-layered methodology to achieve significant performance improvements.
 
-### Data Pre-processing
+#### Data Pre-processing
 The task involved tackling an imbalanced binary classification problem, where the training dataset had a class ratio of 1:1000 (positive to negative). To address this, I first undersampled the negative class and then oversampled the positive class, achieving a balanced ratio of 2:3. Additionally, I incorporated penalties in the loss function to account for the adjusted class. To enhance the dataset, I applied various image augmentation techniques and relied extensively on the `fastai` library for efficient data preprocessing and augmentation workflows.
   
-### Fine-tuning the Base Model
+#### Fine-tuning the Base Model
 I fine-tuned a pre-trained **ResNet-18** model on the single lesion crops. I utilized **StratifiedGroupKFold** to ensure robust evaluation and also to generate **Out-Of-Fold (OOF)** predictions.
 
-### Building an Ensemble System
+#### Building an Ensemble System
 Leveraging the OOF predictions from the ResNet-18 image model, I integrated additional predictive layers by stacking three powerful gradient boosting models: **XGBoost, CatBoost,** and **LightGBM**. Each of these models independently processed the image features, and their outputs were combined using a **soft voting ensemble**. This ensemble strategy balanced the strengths of individual models, yielding a more generalized and accurate prediction system.
 
 ## Result
