@@ -17,7 +17,10 @@ I adopted a structured and multi-layered methodology to achieve significant perf
 The task involved tackling an imbalanced binary classification problem, where the training dataset had a class ratio of 1:1000 (positive to negative). To address this, I first undersampled the negative class and then oversampled the positive class, achieving a balanced ratio of 2:3. Additionally, I incorporated penalties in the loss function to account for the adjusted class. To enhance the dataset, I applied various image augmentation techniques and relied extensively on the `fastai` library for efficient data preprocessing and augmentation workflows.
   
 ### Fine-tuning the Base Model
-I fine-tuned a pre-trained **ResNet-18** model on the single lesion crops. I utilized **StratifiedGroupKFold** to ensure robust evaluation and also to generate **Out-Of-Fold (OOF)** predictions. The standalone image model managed to achieved a pAUC score of 0.144.
+I fine-tuned a pre-trained **ResNet-18** model on the single lesion crops. I utilized **StratifiedGroupKFold** to ensure robust evaluation and also to generate **Out-Of-Fold (OOF)** predictions.
 
 ### Building an Ensemble System
-Leveraging the OOF predictions from the ResNet-18 image model, I integrated additional predictive layers by stacking three powerful gradient boosting models: **XGBoost, CatBoost,** and **LightGBM**. Each of these models independently processed the image features, and their outputs were combined using a **soft voting ensemble**. This ensemble strategy balanced the strengths of individual models, yielding a more generalized and accurate prediction system. The ensemble system improved the pAUC score to 0.167.
+Leveraging the OOF predictions from the ResNet-18 image model, I integrated additional predictive layers by stacking three powerful gradient boosting models: **XGBoost, CatBoost,** and **LightGBM**. Each of these models independently processed the image features, and their outputs were combined using a **soft voting ensemble**. This ensemble strategy balanced the strengths of individual models, yielding a more generalized and accurate prediction system.
+
+## Result
+The ensemble approach resulted in a significant improvement in the partial AUC-ROC score. The metric increased to 0.167, outperforming the standalone image model's score of 0.144, thus showcasing the enhanced predictive capability of the multi-model ensemble.
